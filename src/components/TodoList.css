@@ -174,7 +174,7 @@ ul li {
       border-radius: 3px;
   }
   .delete:hover {
-    background: #181515;
+    background: #4b4a4a;
     cursor: pointer;
   }
 
@@ -186,7 +186,7 @@ ul li {
   }
 
   .edit:hover{
-    background: #161212;
+    background: #4b4a4a;
     cursor: pointer;
   }
 

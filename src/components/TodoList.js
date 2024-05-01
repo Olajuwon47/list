@@ -3,8 +3,8 @@ import SearchBox from './SearchBox.js'
 import {ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import todoImage from "../assests/todo.svg";
-//import deleteImage from '../Assests/delete.svg';
-//import editImage from'../Assests/edit.svg';
+import trash_icon from '../assests/trash.svg';
+import edit_icon from'../assests/edit.svg';
 //import ErrorBoundary from './ErrorBoundary.js';
 import './TodoList.css';
 //const TodoList = ({ todos }) => {
@@ -203,14 +203,14 @@ console.log("filteredTasks:", filteredTasks);*/
       </label>
       <div>
         <img
-          src='../assests/edit.svg'
+          src={edit_icon}
           className="edit"
           alt="edit"
           data-id={task.id}
           onClick={() => handleEditTask(task.id)}
         />
         <img
-          src='../assests/trash.svg'
+          src={trash_icon} 
           className="delete"
           alt="delete"
           data-id={task.id}
