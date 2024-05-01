@@ -12,7 +12,7 @@ import './TodoList.css';
   const [tasks, setTasks] = useState([]); 
   const [inputValue, setInputValue] = useState(''); 
   const [filter, setFilter] = useState('all'); 
-  const [isLoading, setIsLoading] = useState(true); 
+  //const [isLoading, setIsLoading] = useState(true); 
   const [editTaskId, setEditTaskId] = useState(null);
   const [searchfield, setSearchfield] = useState('');
   const [filteredTodos, setFilteredTodos] = useState([]);
@@ -23,7 +23,7 @@ import './TodoList.css';
   useEffect(() => {
    if (todos.length > 0) {
       setTasks(todos);
-      setIsLoading(false);
+     // setIsLoading(false);
     }
   }, [todos]);
    /* setTasks(todos);
@@ -210,7 +210,7 @@ console.log("filteredTasks:", filteredTasks);*/
           onClick={() => handleEditTask(task.id)}
         />
         <img
-          src='../assests/delete.svg'
+          src='../assests/trash.svg'
           className="delete"
           alt="delete"
           data-id={task.id}
