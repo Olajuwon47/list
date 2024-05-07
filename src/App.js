@@ -1,6 +1,6 @@
 import React, { useEffect,useState, useMemo} from 'react';
 import TodoList from './components/TodoList.js';
-import Particles, { initParticlesEngine } from "particles-bg"; 
+import Particles, { initParticlesEngine } from "@tsparticles/react"; 
 import { loadSlim } from "@tsparticles/slim";
 //import ParticlesBg from 'particles-bg'
 import './App.css';
