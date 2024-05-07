@@ -8,14 +8,14 @@ import edit_icon from'../assests/edit.svg';
 //import ErrorBoundary from './ErrorBoundary.js';
 import './TodoList.css';
 //const TodoList = ({ todos }) => {
-  const TodoList = ({ todos = [] }) => {  
-  const [tasks, setTasks] = useState([]); 
-  const [inputValue, setInputValue] = useState(''); 
-  const [filter, setFilter] = useState('all'); 
-  const [isLoading, setIsLoading] = useState(true); 
-  const [editTaskId, setEditTaskId] = useState(null);
-  const [searchfield, setSearchfield] = useState('');
- const [filteredTodos, setFilteredTodos] = useState([]);
+const TodoList = ({ todos = [] }) => {  
+const [tasks, setTasks] = useState([]); 
+const [inputValue, setInputValue] = useState(''); 
+const [filter, setFilter] = useState('all'); 
+const [isLoading, setIsLoading] = useState(true); 
+const [editTaskId, setEditTaskId] = useState(null);
+const [searchfield, setSearchfield] = useState('');
+const [filteredTodos, setFilteredTodos] = useState([]);
  useEffect(() => {
   fetchTodos();
 }, []);

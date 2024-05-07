@@ -184,9 +184,9 @@ ul li {
   }
   #total-tasks {
     margin-bottom: 20px;
-    font-size: 13px;
+    font-size: 14px;
       margin-left: 2px;
-      color: gray;
+      color: rgb(8, 1, 1);
   }
   /*
 dropdown*/
