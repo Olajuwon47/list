@@ -1,8 +1,7 @@
 import React from 'react';
 import TodoList from './components/TodoList.js';
 import ParticlesBg from 'particles-bg'
-
-//import './App.css';
+import './App.css';
  const App=() =>{
   return (
     <div>

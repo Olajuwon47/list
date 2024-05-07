@@ -12,20 +12,32 @@ import './TodoList.css';
   const [tasks, setTasks] = useState([]); 
   const [inputValue, setInputValue] = useState(''); 
   const [filter, setFilter] = useState('all'); 
-  //const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true); 
   const [editTaskId, setEditTaskId] = useState(null);
   const [searchfield, setSearchfield] = useState('');
-  const [filteredTodos, setFilteredTodos] = useState([]);
- /* useEffect(() => {
+ const [filteredTodos, setFilteredTodos] = useState([]);
+ useEffect(() => {
+  fetchTodos();
+}, []);
+
+// Fetch todos from an API
+const fetchTodos = async () => {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/todos?_limit=4');
+    const todos = await response.json();
     setTasks(todos);
     setIsLoading(false);
-  }, [todos]);*/
-  useEffect(() => {
+  } catch (error) {
+    console.log('Error fetching todos:', error);
+    setIsLoading(false);
+  }
+};
+ /* useEffect(() => {
    if (todos.length > 0) {
       setTasks(todos);
-     // setIsLoading(false);
+   setIsLoading(false);
     }
-  }, [todos]);
+  }, [todos]);*/
    /* setTasks(todos);
       setIsLoading(false);
      catch (error) {
@@ -35,11 +47,41 @@ import './TodoList.css';
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
-  const handleAddTask = async () => {
+ /* const handleAddTask = async () => {
+    if (inputValue.trim() === '') {
+      return;
+    }
     try {
      // const response = await fetch('your-api-endpoint');
      // const addedTask = await response.json();
-      const addedTask = { id: 3, title: 'New Task', completed: false };
+      const addedTask = { title: '', completed: false };
+      setTasks((prevTasks) => [...prevTasks, addedTask]);
+      setInputValue('');
+      toast.success('Task added successfully');
+    } catch (error) {
+      console.log('Error adding task:', error);
+      toast.error('Error adding task');
+    }
+  };*/
+   const handleAddTask = async () => {
+    if (inputValue.trim() === '') {
+      return;
+    }
+
+    const newTask = {
+      title: inputValue,
+      completed: false
+    };
+
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/todos', {
+        method: 'POST',
+        body: JSON.stringify(newTask),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      });
+      const addedTask = await response.json();
       setTasks((prevTasks) => [...prevTasks, addedTask]);
       setInputValue('');
       toast.success('Task added successfully');
@@ -48,6 +90,7 @@ import './TodoList.css';
       toast.error('Error adding task');
     }
   };
+
     const handleSearchChange=(event) => {
       const searchValue=event.target.value.toLowerCase();
    setSearchfield(searchValue);
@@ -82,13 +125,13 @@ const handleEditTask = (taskId) => {
   const taskToEdit = tasks.find((task) => task.id === taskId);
   setInputValue(taskToEdit.title);
 };
-const handleUpdateTask = async () => {
+/*const handleUpdateTask = async () => {
   try {
     if (inputValue.trim() === '') {
       return;
     }
     const updatedTask = {
-      id: editTaskId,
+    //  id: editTaskId,
       title: inputValue,
       completed: false
     };
@@ -102,8 +145,73 @@ const handleUpdateTask = async () => {
     console.log('Error updating task:', error);
     toast.error('Error updating task');
   }
+};*/
+const handleUpdateTask = async () => {
+  if (inputValue.trim() === '') {
+    return;
+  }
+
+  const updatedTask = {
+    title: inputValue,
+    completed: false
+  };
+
+  try {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${editTaskId}`, {
+      method: 'PUT',
+      body: JSON.stringify(updatedTask),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    });
+    const updatedTaskData = await response.json();
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === editTaskId ? { ...task, title: updatedTaskData.title } : task
+      )
+    );
+    setInputValue('');
+    setEditTaskId(null);
+    toast.success('Task updated successfully');
+  } catch (error) {
+    console.log('Error updating task:', error);
+    toast.error('Error updating task');
+  }
 };
-  const handleCompleteAll = () => {
+const handleCompleteAll = () => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => ({ ...task, completed: true }))
+    );
+  };
+
+  // Clear completed tasks
+  const handleClearCompleted = () => {
+    setTasks((prevTasks) => prevTasks.filter((task) => !task.completed));
+  };
+
+  // Handle filter change
+  const handleFilterChange = (filterType) => {
+    setFilter(filterType);
+  };
+
+  // Filter tasks based on the selected filter
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === 'all') {
+      return true;
+    } else if (filter === 'completed') {
+      return task.completed;
+    } else if (filter === 'uncompleted') {
+      return !task.completed;
+    }
+    return true;
+  });
+
+  // Display loading message while data is being fetched
+  if (isLoading) {
+    return <h1>Loading My Todo List...</h1>;
+  }
+
+/*const handleCompleteAll = () => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => ({ ...task, completed: true }))
     );
@@ -114,10 +222,7 @@ const handleUpdateTask = async () => {
   const handleFilterChange = (filterType) => {
     setFilter(filterType);
   };
-  //console.log('Tasks:', tasks);
-let filteredTasks = [];
-if (tasks) {
-  filteredTasks = tasks.filter((task) => {
+const filteredTasks = tasks.filter((task) => {
     if (filter === 'all') {
       return true;
     } else if (filter === 'completed') {
@@ -127,21 +232,9 @@ if (tasks) {
     }
     return true;
   });
- // console.log('Filter:', filter);
-}
-  /*const filteredTasks = tasks && tasks.filter((task) => {
-    if (filter === 'all') {
-      return true;
-    } else if (filter === 'completed') {
-      return task.completed;
-    } else if (filter === 'uncompleted') {
-      return !task.completed;
-    }
-    return true;
-  });
-console.log("filteredTasks:", filteredTasks);*/
-  /*if (isLoading) {
-    return <div>Loading...</div>;
+
+  //if (isLoading) {
+   // return <div>Loading...</div>;
  }*/
   return (
     <div className="todo-app">
@@ -182,8 +275,7 @@ console.log("filteredTasks:", filteredTasks);*/
           </p>
         </div>
         <ul id="list">
-        {filteredTasks && filteredTasks.length > 0 ? (
-       filteredTasks.map((task) => (
+       {filteredTasks.map((task) => (
        <li key={task.id}>
        <input
         type="checkbox"
@@ -194,12 +286,6 @@ console.log("filteredTasks:", filteredTasks);*/
         onChange={() => handleTaskCheckboxChange(task.id)}
       />
       <label htmlFor={`task-${task.id}`}>{task.title}
-      {/*tasks && tasks.map((task) => (
-       <li key={task.id}>
-        {filteredTasks.map((task) => (
-        <li key={task.id}>
-      </li>
-    ))}*/}
       </label>
       <div>
         <img
@@ -218,70 +304,24 @@ console.log("filteredTasks:", filteredTasks);*/
         />
       </div>
     </li>
-    ))
-  ) : (
-    <li>No tasks available</li>
-  )}
+    ))}
 </ul>
-       {/*<ul id="list">
-          {filteredTasks.map((task) => (
-            <li key={task.id}>
-              <input
-                type="checkbox"
-                id={`task-${task.id}`}
-                data-id={task.id}
-                className="custom-checkbox"
-                checked={task.completed}
-                onChange={() => handleTaskCheckboxChange(task.id)}
-              />
-              <label htmlFor={`task-${task.id}`}>{task.title}
-              {/*tasks && tasks.map((task) => (
-                {filteredTasks.map((task) => (
-                <li key={task.id}>
-              </li>
-            ))}
-              </label>
-              <div>
-                <img
-                  src='../assests/edit.svg'
-                  className="edit"
-                  alt="edit-icon"
-                  data-id={task.id}
-                  onClick={() => handleEditTask(task.id)}
-                />
-                <img
-                  src='../assests/delete.svg'
-                  className="delete"
-                  alt="delete-icon"
-                  data-id={task.id}
-                  onClick={() => handleDeleteTask(task.id)}
-                />
-              </div>
-            </li>
-          ))}
-        </ul>*/}
+
         <div className="filters">
           <div className="dropdown">
             <button className="dropbtn">Filter</button>
             <div className="dropdown-content">
-            <button className="dropbtn" onClick={() => handleFilterChange('all')}>
-                  All
-                </button>
-                <button className="dropbtn" onClick={() => handleFilterChange('uncompleted')}>
-                  Uncompleted
-                </button>
-                <button className="dropbtn" onClick={() => handleFilterChange('completed')}>
-                  Completed
-                </button>
-              {/*<a href="#" id="all" onClick={() => handleFilterChange('all')}>
-                All
-              </a>
-              <a href="#" id="rem" onClick={() => handleFilterChange('uncompleted')}>
-                Uncompleted
-              </a>
-              <a href="#" id="com" onClick={() => handleFilterChange('completed')}>
-                Completed
-        </a>*/}
+          <div className="dropdown-content">
+            <button type="button" id="all" onClick={() => handleFilterChange('all')}>
+              All
+            </button>
+            <button type="button" id="rem" onClick={() => handleFilterChange('uncompleted')}>
+              Uncompleted
+            </button>
+            <button type="button" id="com" onClick={() => handleFilterChange('completed')}>
+              Completed
+            </button>
+          </div>
             </div>
           </div>
           <div className="completed-task">
